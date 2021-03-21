@@ -1,13 +1,17 @@
 # spider_for_experts
 
-[TOC]
+---
+# content
+* 爬虫部分
+* requirements
+---
 
 ## 爬虫部分
 
 爬虫部分由两部分构成：
 
-1. 从[兰德公司官网](https://www.rand.org/about/people.html)（https://www.rand.org/about/people.html）的专家列表爬取专家的名字
-2. 在[谷歌学术](https://scholar.google.com/)（https://scholar.google.com/）利用高级搜索，搜索包含专家名字的论文，过滤并保存。
+1. 从[兰德公司官网](https://www.rand.org/about/people.html "专家列表界面")的专家列表爬取专家的名字
+2. 在[谷歌学术](https://scholar.google.com/)利用高级搜索，搜索包含专家名字的论文，过滤并保存。
 
 爬取谷歌学术的代码文件主要有三个：`g_utils.py`、`google_scholar.py`、`utils.py`
 
@@ -23,7 +27,7 @@
 
 爬取结果的示例见文件`./example/example.json`
 
-若下图无法显示，则可在[此页面](http://jsoneditoronline.org/index.html)查看保存的json结构：http://jsoneditoronline.org/index.html
+若下图无法显示，则可在[此页面](http://jsoneditoronline.org/index.html)查看保存的json结构
 
 <img src="./example/example.png" alt="example" style="zoom:50%;" />
 
