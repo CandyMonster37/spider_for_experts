@@ -52,7 +52,7 @@
 
 若下图无法显示，则可在[此页面](http://jsoneditoronline.org/index.html)并上传文件`./example/Samuel Absher`查看json结构。
 
-<img src="C:\Users\CandyMonster\Desktop\tmp\git\spider_for_experts\example\info_cont.png" alt="info_cont" style="zoom:50%;" />
+<img src="./example/info_cont.png" alt="info_cont" style="zoom:50%;" />
 
 这是Noha Abdel-Karim的相关信息，文件名是`Noha Abdel-Karim`，虽然没有后缀名，但这其实是一个json文件。json内容是一个由13个字典构成的列表，字典的键值对如图所示。
 
