@@ -21,7 +21,6 @@ def main():
         os.mkdir('./data/info')
     name_list, fields = get_experts()
 
-    data = {}
     for person in name_list:
         tar = './data/info/' + person
         if os.path.exists(tar):
@@ -37,7 +36,7 @@ def main():
 
         print('experts:', person, 'total: ', len(info))
         tar = './data/info/' + person
-        save_file(obj=data, filename=tar)
+        save_file(obj=info, filename=tar)
 
         stop = random.randint(1, 10)
         time.sleep(stop)
