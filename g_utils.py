@@ -90,10 +90,11 @@ def get_1_page(name, info, start):
 
     res.encoding = 'utf-8'
     html = res.text
+    # print(html)
 
     tag = get_info(html, info)
 
-    stop = random.randint(1, 5)
+    stop = random.randint(4, 10)
     time.sleep(stop)
 
     return tag
@@ -116,6 +117,7 @@ def get_info(html, person):
 
     # Get the paper titles less than 10
     un_titles = bf.select('#gs_res_ccl_mid > div > div.gs_ri > h3 > a')
+    # #gs_res_ccl_mid > div:nth-child(1) > div.gs_ri > h3
     # The parameters in brackets are related to the structure of the web page
     # Press F12 to find the target label name and label attributes
     for item in un_titles:
@@ -132,13 +134,11 @@ def get_info(html, person):
         if len(ans) == 0:
             ans.append("0")
         times.append(ans[0])
-        # print(item.text)
 
     # get the magazine where the paper is published
     # the domain name of the magazine
     # as well as # the paper publication year
     un_org = bf.select('#gs_res_ccl_mid > div > div > div.gs_a')
-    strip_ = []
     mag_year = []
 
     for item in un_org[:len(titles)]:
@@ -148,39 +148,35 @@ def get_info(html, person):
         tmp = un_mag_year.split(',')
 
         if len(tmp) != 2:
-            strip_.append(un_org.index(item))
-            continue
-        if tmp[-1].strip().isdigit():
-            mag_year.append(tmp)
+            if tmp[-1].strip().isdigit():
+                padding = ["None", tmp[-1].strip()]
+            else:
+                padding = ["None", "None"]
+            mag_year.append(padding)
         else:
-            strip_.append(un_org.index(item))
+            if tmp[-1].strip().isdigit():
+                mag_year.append(tmp)
+            else:
+                padding = [tmp[-1], "None"]
+                mag_year.append(padding)
 
         site = mid_text_list[-1].strip()
         domain.append(site)
 
     for item in mag_year:
+        if item[0].strip().isdigit():
+            item[0] = 'None'
         mag.append(item[0])
         year.append(item[-1])
-
-    titles_ = []
-    urls_ = []
-    times_ = []
-    for i in range(0, len(titles)):
-        if i in strip_:
-            continue
-        else:
-            titles_.append(titles[i])
-            urls_.append(urls[i])
-            times_.append(times[i])
 
     # for i in range(0, len(year)):
     #    print('magazine:', mag[i], ' ||| domain:', domain[i], ' ||| year:', year[i])
 
-    for i in range(0, len(times_)):
+    for i in range(0, len(times)):
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        tmp = {'title': titles_[i], 'url': urls_[i],
+        tmp = {'title': titles[i], 'url': urls[i],
                'magazine': mag[i], 'domain': domain[i],
-               'times': times_[i], 'year': year[i],
+               'times': times[i], 'year': year[i],
                'Timestamp': now}
         person.append(tmp)
     return flag
