@@ -6,6 +6,9 @@ import os
 from utils import load_file, save_file
 
 
+alpha = 1.3
+
+
 def get_experts():
     if not os.path.exists('./data/stafflist.json'):
         os.system("python3 for_rand.py")
@@ -38,7 +41,7 @@ def main():
         weight = 0
         while tag >= 10:  # Determine whether it's the last page
             weight += 1
-            time.sleep(weight*1.3)
+            time.sleep(weight*alpha)
             tag = get_1_page(name=person, info=info, start=start)
             start += 10
 
