@@ -89,6 +89,7 @@ def get_1_page(name, info, start):
         print(e)
 
     res.encoding = 'utf-8'
+    # res.encoding = res.apparent_encoding  # In fact, this should be used instead of the upper line.
     html = res.text
     # print(html)
 
