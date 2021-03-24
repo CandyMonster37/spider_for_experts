@@ -6,7 +6,7 @@ import os
 from utils import load_file, save_file
 
 
-alpha = 1.3
+alpha = 1.3  # magnification of the basic waiting time
 
 
 def get_experts():
