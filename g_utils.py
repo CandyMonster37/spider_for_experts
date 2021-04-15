@@ -71,9 +71,8 @@ def try_anain(url, flag=True, retry=5):
             print('Connect error!')
             print(e)
             print("try again...")
-        except Exception as e:
-            print('other error:')
-            print(e)
+        except:
+            print('other error...')
             print("try again...")
         finally:
             times += 1
@@ -123,9 +122,8 @@ def get_1_page(name, info, start, retry):
         print('Connect error!')
         print(e)
         again_ = True
-    except Exception as e:
-        print('other error:')
-        print(e)
+    except:
+        print('other error')
         again_ = True
 
     if not again_:
