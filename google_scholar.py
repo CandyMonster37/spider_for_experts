@@ -5,8 +5,10 @@ import random
 import os
 from utils import load_file, save_file
 
-
-alpha = 1.3  # magnification of the basic waiting time
+job_l = 0
+job_r = job_l + 100
+alpha = 1.3
+retry = 5
 
 
 def get_experts():
@@ -30,6 +32,7 @@ def main():
     cont = False  # Determine whether it's continuous
 
     for person in name_list:
+        # for person in name_list[job_l:job_r]:
         tar = './data/info/' + person
         if os.path.exists(tar):
             continue
@@ -41,8 +44,8 @@ def main():
         weight = 0
         while tag >= 10:  # Determine whether it's the last page
             weight += 1
-            time.sleep(weight*alpha)
-            tag = get_1_page(name=person, info=info, start=start)
+            time.sleep(weight * alpha)
+            tag = get_1_page(name=person, info=info, start=start, retry=retry)
             start += 10
 
         print('experts:', person, 'total: ', len(info))

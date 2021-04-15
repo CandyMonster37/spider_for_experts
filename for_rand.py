@@ -8,12 +8,22 @@
 # https://www.rand.org/content/rand/about/people/_jcr_content/par/stafflist.xml
 # so it's simply to get the datas and save them
 
-from utils import save_file
+from utils import save_file, load_file
 import requests
 import time
 import os
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
+
+
+def read_json():
+    rela = load_file()
+    experts_list = rela.keys()
+    for person in experts_list:
+        print("expert: ", person)  # str
+        print("position: ", rela[person]['position'])  # str
+        print("search areas: ", rela[person]["area"])  # str split by ','
+    return rela
 
 
 def read_xml():
@@ -24,11 +34,15 @@ def read_xml():
     itemlist_ = root.getElementsByTagName('staff')
     for item in itemlist_:
         name = item.getAttribute("name")
-        area = item.getAttribute("title")
+        position = item.getAttribute("title")
+        search_tags = item.getAttribute("search-tags")
+        pre_tag = search_tags.replace(" ", ",")
+        area_tag = pre_tag.replace("-", " ")
         if name in list(rela.keys()):
-            rela[name] += area
+            continue
         else:
-            rela[name] = area
+            rela[name] = {'position': position,
+                          'area': area_tag}
 
     return rela
 
@@ -45,8 +59,11 @@ def get_xml():
         print('get response successfully! ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         # print(res.status_code)
     except requests.HTTPError as e:
-        print('http error: status_code', res.status_code)
+        print('http error! status code: ', e.response.status_code)
         time.sleep(3)
+    except requests.exceptions.RequestException as e:
+        print('Connect error!')
+        print(e)
     except Exception as e:
         print('other error:')
         print(e)

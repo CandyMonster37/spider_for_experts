@@ -5,8 +5,6 @@ import time
 import re
 import random
 
-proxy = {'https': 'http://127.0.0.1:21882'}  # Modify it to your own port number
-
 ua_list = [
     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 "
     "OPR/26.0.1656.60",
@@ -41,21 +39,56 @@ ua_list = [
 ]
 
 
-def set_cookie():  # Not necessarily used
+def set_cookie():
     ori_cookie = 'GSP=LM=1616229657:S=eFgQB0Mx-bqUCu9u; ' \
                  'CONSENT=YES+; NID=211=TzsOglX9wAfWXYpWByRZDUa' \
                  'Fmj7KZ8VMrottKaV8uaX63kCrGQKXl09y_hHvZjpz0FrVIENwK' \
                  'nIfQ6pjeslwQe36zqLW5GtGXfzueC38yKPIGSBsBl5VgLbrtVAd-3' \
                  'bUDAqcBAKkf3Gl8jY9H2U--EBwY0vH_v5ned50VkQ8LYM'
 
-    cookie = {}
-    for line in ori_cookie.split(';'):
+    cookie = {}  # 初始化cookies字典变量
+    for line in ori_cookie.split(';'):  # 按照字符：进行划分读取
+        # 其设置为1就会把字符串拆分成2份
         name, value = line.strip().split('=', 1)
-        cookie[name] = value
+        cookie[name] = value  # 为字典cookies添加内容
     return cookie
 
 
-def get_1_page(name, info, start):
+def try_anain(url, flag=True, retry=5):
+    proxy = {'https': 'http://127.0.0.1:21882'}
+    # cookie = set_cookie()
+    headers = {'Connection': 'close', 'User-Agent': random.choice(ua_list)}
+    times = 0
+
+    while flag and times < retry:
+        try:
+            res = requests.get(url, headers=headers, proxies=proxy)
+            flag = False
+        except requests.HTTPError as e:
+            print('http error! status code: ', e.response.status_code)
+            print("try again")
+        except requests.exceptions.RequestException as e:
+            print('Connect error!')
+            print(e)
+            print("try again...")
+        except Exception as e:
+            print('other error:')
+            print(e)
+            print("try again...")
+        finally:
+            times += 1
+            stop = random.randint(4, 10)
+            time.sleep(stop)
+
+    if flag:
+        return None, 0
+    else:
+        res.encoding = res.apparent_encoding
+        html = res.text
+        return html, 1
+
+
+def get_1_page(name, info, start, retry):
     un_name = name.split()
     para_name = ''
     for item in un_name:
@@ -72,6 +105,7 @@ def get_1_page(name, info, start):
     # url = 'https://scholar.google.com/scholar?start=10&as_q=&as_epq=&as_oq=&as_eq=&as_occt=any&as_sauthors=+Noha' \
     #      '+Abdel-Karim&as_publication=&as_ylo=&as_yhi=&hl=zh-CN&as_sdt=0%2C5&as_vis=1'
 
+    proxy = {'https': 'http://127.0.0.1:21882'}
     # cookie = set_cookie()
     headers = {'Connection': 'close', 'User-Agent': random.choice(ua_list)}
 
@@ -80,24 +114,37 @@ def get_1_page(name, info, start):
         res = requests.get(url, headers=headers, proxies=proxy)
         print('url:', url)
         print('get response successfully! ', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+        again_ = False
         # print(res.status_code)
     except requests.HTTPError as e:
-        print('http error: status_code', res.status_code)
-        time.sleep(3)
+        print('http error! status code: ', e.response.status_code)
+        again_ = True
+    except requests.exceptions.RequestException as e:
+        print('Connect error!')
+        print(e)
+        again_ = True
     except Exception as e:
         print('other error:')
         print(e)
+        again_ = True
 
-    res.encoding = 'utf-8'
-    # res.encoding = res.apparent_encoding  # In fact, this should be used instead of the upper line.
-    html = res.text
-    # print(html)
+    if not again_:
+        res.encoding = res.apparent_encoding
+        html = res.text
+        chance = 1
+        # print(html)
+    else:
+        html, chance = try_anain(url, again_, retry)
 
-    tag = get_info(html, info)
+    if chance == 0:
+        # 重连多次仍然失败
+        tag = 10
+        # 就直接下一轮，为空则结束
+    else:
+        tag = get_info(html, info)
 
     stop = random.randint(4, 10)
     time.sleep(stop)
-
     return tag
 
 
